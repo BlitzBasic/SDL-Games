@@ -35,6 +35,7 @@
 		<Linker>
 			<Add option="`sdl-config --libs`" />
 			<Add option="-lSDL_mixer" />
+			<Add option="-lSDL_image" />
 		</Linker>
 		<Unit filename="highscore.dat" />
 		<Unit filename="images/background1.bmp" />

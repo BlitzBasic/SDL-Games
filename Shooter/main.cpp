@@ -370,7 +370,7 @@ int main (int argc, char **argv)
 
     ImageCache imgcache;
 
-    Window mainWindow("Mission: Alien", WIDTH, HEIGHT, 16, SDL_HWSURFACE|SDL_DOUBLEBUF, 100, 0, 50, background1img);
+    Window mainWindow("Mission: Alien", WIDTH, HEIGHT, 32, SDL_HWSURFACE|SDL_DOUBLEBUF, 100, 0, 50, background1img);
 
     if(Mix_OpenAudio(22050, AUDIO_S16LSB, 2, 4096 ) == -1)
     {

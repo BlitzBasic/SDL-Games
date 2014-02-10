@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstring>
 
+#include <SDL_image.h>
+
 #include "sdl2d.h"
 
 
@@ -132,7 +134,7 @@ void ImageCache::unloadImage(imageList *img)
 
 SDL_Surface *ImageCache::loadImage(const char *filename)
 {
-    SDL_Surface *newSurface = SDL_LoadBMP(filename);
+    SDL_Surface *newSurface = IMG_Load(filename);
 
     if(newSurface == NULL)
         return NULL;
@@ -1128,7 +1130,7 @@ void Window::initWindow()
 
 SDL_Surface *Window::initSDL(int width, int height, int bpp, Uint32 flags)
 {
-    if(SDL_Init( SDL_INIT_VIDEO ) != 0 )
+    if(SDL_Init( SDL_INIT_EVERYTHING ) != 0 )
     {
         printf("Unable to init SDL: %s\n", SDL_GetError());
         return NULL;
