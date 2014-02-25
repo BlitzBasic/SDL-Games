@@ -29,6 +29,9 @@
 
 #define EXPLOSION_LIFETIME 500
 
+#define VSYNC_FRAMERATE 100
+#define VSYNC_FRAMES 3
+
 #define MAX_IMAGENAME_LENGTH 30
 
 #define BACKGROUND_IMAGE_CHANGE_DENSITY 10000
@@ -53,6 +56,7 @@ int lifes = 0;
 int highscorePoints[10];
 char *highscoreNames[10];
 
+char musicfile[MAX_IMAGENAME_LENGTH];
 char playerimg[MAX_IMAGENAME_LENGTH];
 char bulletimg[MAX_IMAGENAME_LENGTH];
 char guidedbulletimg[MAX_IMAGENAME_LENGTH];
@@ -339,6 +343,7 @@ int main (int argc, char **argv)
 
     fclose(f);
 
+    strncpy(musicfile, texturepack, strlen(texturepack));
     strncpy(background1img, texturepack, strlen(texturepack));
     strncpy(background2img, texturepack, strlen(texturepack));
     strncpy(background3img, texturepack, strlen(texturepack));
@@ -352,6 +357,7 @@ int main (int argc, char **argv)
     strncpy(pauseimg, texturepack, strlen(texturepack));
     strncpy(playerimg, texturepack, strlen(texturepack));
     strncpy(explosionimg, texturepack, strlen(texturepack));
+    strcat(musicfile, "music.mp3");
     strcat(background1img, "background1.bmp");
     strcat(background2img, "background2.bmp");
     strcat(background3img, "background3.bmp");
@@ -378,10 +384,10 @@ int main (int argc, char **argv)
     }
     else
     {
-        Mix_Music *music = Mix_LoadMUS("music.mp3");
+        Mix_Music *music = Mix_LoadMUS(musicfile);
 
         if(music == NULL)
-            printf("Unable to load background music.\n");
+            printf("Unable to load background music %s.\n", musicfile);
         else
             Mix_PlayMusic(music, -1);
     }
@@ -410,6 +416,8 @@ int main (int argc, char **argv)
     int medipacks = 0;
     int rockets = 0;
     int misses = 0;
+
+    VSYNC frameskip(VSYNC_FRAMERATE, VSYNC_FRAMES);
 
     while (!done)
     {
@@ -600,6 +608,8 @@ int main (int argc, char **argv)
 
         if(lifes == 0)
             done = true;
+
+        frameskip.sync();
     }
 
     int finish = SDL_GetTicks();
