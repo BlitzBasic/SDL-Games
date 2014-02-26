@@ -55,7 +55,7 @@ class ImageCache
         ~ImageCache();
 
         SDL_Surface *requestImage(const char *filename);
-        int unloadImage(const char *filename);
+        bool unloadImage(const char *filename);
 
     protected:
         void unloadImage(imageList *img);
@@ -142,9 +142,9 @@ class Window
         ~Window();
 
         bool checkBackgroundImage();
-        int loadBackgroundImage(const char *filename);
+        bool loadBackgroundImage(const char *filename);
         void unloadBackgroundImage();
-        int changeBackgroundImage(const char *filename);
+        bool changeBackgroundImage(const char *filename);
 
         void renderBackground();
         int renderObject2D(Object2D *obj);
@@ -174,6 +174,38 @@ class Window
         SDL_Surface *screen;
         SDL_Surface *backgroundImage;
         colorRGB backgroundColor;
+};
+
+
+class VSYNC
+{
+    public:
+        VSYNC();
+        VSYNC(int framerate);
+        VSYNC(int framerate, int syncbundle);
+        ~VSYNC();
+
+        int setFramerate(int newFramerate);
+        int getFramerate();
+
+        int setSyncBundle(int newSyncBundle);
+        int getSyncBundle();
+
+        void reset();
+        bool sync();
+
+    protected:
+        void initVSYNC();
+
+        void calculateDelay();
+        int calculateDelay(int framerate, int bundleSize);
+
+        int maxFramerate;
+        int syncBundle;
+        Uint32 delayTime;
+
+        int frameCounter;
+        Uint32 lastSync;
 };
 
 

@@ -1,11 +1,14 @@
-#include <cstdio>
-#include <cstdlib>
+#include <iostream>
 #include <cmath>
-#include <cstring>
 
 #include <SDL_image.h>
 
 #include "sdl2d.h"
+
+
+
+#define STD_MAX_FRAMERATE 60
+#define STD_SYNC_BUNDLE_SIZE 1
 
 
 
@@ -45,7 +48,7 @@ ImageCache::~ImageCache()
         currentElement = nextElement;
     }
 
-    printf("%d images unloaded.\n", counter);
+    std::cout << counter << " images unloaded." << std::endl;
 }
 
 
@@ -67,15 +70,15 @@ SDL_Surface *ImageCache::requestImage(const char *filename)
 }
 
 
-int ImageCache::unloadImage(const char *filename)
+bool ImageCache::unloadImage(const char *filename)
 {
     imageList *currentElement = first;
     imageList *nextElement = NULL;
 
     if(first == NULL)
     {
-        printf("you have to load images before you can unload them.\n");
-        return -1;
+        std::cerr << "Warning: You have to load images before you can unload them." << std::endl;
+        return false;
     }
     else if(strncmp(first->element->filename, filename, strlen(filename)) == 0)
     {
@@ -85,7 +88,7 @@ int ImageCache::unloadImage(const char *filename)
 
         first = nextElement;
 
-        return 0;
+        return true;
     }
 
     while(currentElement->next != NULL)
@@ -100,15 +103,15 @@ int ImageCache::unloadImage(const char *filename)
 
             currentElement->next = nextElement;
 
-            return 0;
+            return true;
         }
 
         currentElement = nextElement;
     }
 
-    printf("%s can not be unloaded because it is not loaded.\n", filename);
+    std::cerr << "Warning: "<< filename << " can not be unloaded because it is not loaded." << std::endl;
 
-    return -1;
+    return false;
 }
 
 
@@ -163,7 +166,7 @@ SDL_Surface *ImageCache::loadImage(const char *filename)
     strncpy(iterator->element->filename, filename, strlen(filename));
     iterator->element->surface = newSurface;
 
-    printf("new image %s loaded.\n", filename);
+    std::cout << "new image " << filename << " loaded." << std::endl;
 
     return newSurface;
 }
@@ -187,7 +190,7 @@ Object2D::Object2D(const char *image, ImageCache *cache)
 
     if(bmp == NULL)
     {
-        printf("Unable to load bitmap %s: %s\n", image, SDL_GetError());
+        std::cerr << "Critical error: Unable to load bitmap " << image << ": " << SDL_GetError() << std::endl;
         exit(-1);
     }
 }
@@ -204,7 +207,7 @@ Object2D::Object2D(const char *image, ImageCache *cache, int x, int y)
 
     if(bmp == NULL)
     {
-        printf("Unable to load bitmap %s: %s\n", image, SDL_GetError());
+        std::cerr << "Critical error: Unable to load bitmap " << image << ": " << SDL_GetError() << std::endl;
         exit(-1);
     }
 
@@ -223,7 +226,7 @@ Object2D::Object2D(const char *image, ImageCache *cache, coords2D coords)
 
     if(bmp == NULL)
     {
-        printf("Unable to load bitmap %s: %s\n", image, SDL_GetError());
+        std::cerr << "Critical error: Unable to load bitmap " << image << ": " << SDL_GetError() << std::endl;
         exit(-1);
     }
 
@@ -388,7 +391,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
  }
@@ -402,7 +405,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 }
@@ -416,7 +419,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, Uint8 red, Uint8 gr
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -432,7 +435,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, Uint8 red, Uint8 green, Uin
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -448,7 +451,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, colorRGB color)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -464,7 +467,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, colorRGB color)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -480,7 +483,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, colorRGBA color)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -496,7 +499,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, colorRGBA color)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -512,7 +515,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, const char *backImg
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -528,7 +531,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, const char *backImg)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -544,7 +547,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, Uint8 red, Uint8 gr
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -562,7 +565,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, Uint8 red, Uint8 green, Uin
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -580,7 +583,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, colorRGB color, con
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -598,7 +601,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, colorRGB color, const char 
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -616,7 +619,7 @@ Window::Window(int width, int height, int bpp, Uint32 flags, colorRGBA color, co
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -634,7 +637,7 @@ Window::Window(coords2D size, int bpp, Uint32 flags, colorRGBA color, const char
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -652,7 +655,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -668,7 +671,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags)
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -684,7 +687,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -702,7 +705,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, Uint8 
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -720,7 +723,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -738,7 +741,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, colorR
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -756,7 +759,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -774,7 +777,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, colorR
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -792,7 +795,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -810,7 +813,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, const 
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -828,7 +831,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -848,7 +851,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, Uint8 
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -868,7 +871,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -888,7 +891,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, colorR
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -908,7 +911,7 @@ Window::Window(const char *caption, int width, int height, int bpp, Uint32 flags
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -928,7 +931,7 @@ Window::Window(const char *caption, coords2D size, int bpp, Uint32 flags, colorR
 
     if(screen == NULL)
     {
-        printf("Unable to open graphics window.\n");
+        std::cerr << "Critical error: Unable to open graphics window." << std::endl;
         exit(-1);
     }
 
@@ -959,23 +962,23 @@ bool Window::checkBackgroundImage()
 }
 
 
-int Window::loadBackgroundImage(const char *filename)
+bool Window::loadBackgroundImage(const char *filename)
 {
     if(backgroundImage != NULL)
     {
-        printf("You have to unload the current background image before you can load a new background image.\n");
-        return -1;
+        std::cerr << "Warning: You have to unload the current background image before you can load a new background image." << std::endl;
+        return false;
     }
 
     backgroundImage = SDL_LoadBMP(filename);
 
     if(backgroundImage == NULL)
     {
-        printf("Unable to load background image %s: %s\n", filename, SDL_GetError());
-        return -1;
+        std::cerr << "Error: Unable to load background image " << filename << ": " << SDL_GetError() << std::endl;
+        return false;
     }
 
-    return 0;
+    return true;
 }
 
 
@@ -990,7 +993,7 @@ void Window::unloadBackgroundImage()
 }
 
 
-int Window::changeBackgroundImage(const char *filename)
+bool Window::changeBackgroundImage(const char *filename)
 {
     unloadBackgroundImage();
     return loadBackgroundImage(filename);
@@ -1132,7 +1135,7 @@ SDL_Surface *Window::initSDL(int width, int height, int bpp, Uint32 flags)
 {
     if(SDL_Init( SDL_INIT_EVERYTHING ) != 0 )
     {
-        printf("Unable to init SDL: %s\n", SDL_GetError());
+        std::cerr << "Error: Unable to init SDL: " << SDL_GetError() << std::endl;
         return NULL;
     }
 
@@ -1142,7 +1145,7 @@ SDL_Surface *Window::initSDL(int width, int height, int bpp, Uint32 flags)
 
     if(!screen)
     {
-        printf("Unable to set %dx%dx%d video: %s\n", width, height, bpp, SDL_GetError());
+        std::cerr << "Error: Unable to set " << width << "x" << height << "x" << bpp << " video: " << SDL_GetError() << std::endl;
         return NULL;
     }
 
@@ -1153,4 +1156,122 @@ SDL_Surface *Window::initSDL(int width, int height, int bpp, Uint32 flags)
 SDL_Surface *Window::initSDL(coords2D size, int bpp, Uint32 flags)
 {
     return initSDL(size.x, size.y, bpp, flags);
+}
+
+
+VSYNC::VSYNC()
+{
+    initVSYNC();
+    reset();
+}
+
+
+VSYNC::VSYNC(int framerate)
+{
+    initVSYNC();
+    setFramerate(framerate);
+    reset();
+}
+
+
+VSYNC::VSYNC(int framerate, int syncbundle)
+{
+    initVSYNC();
+    setFramerate(framerate);
+    setSyncBundle(syncbundle);
+    reset();
+}
+
+
+VSYNC::~VSYNC()
+{
+
+}
+
+
+int VSYNC::setFramerate(int newFramerate)
+{
+    if(newFramerate <= 0)
+    {
+        std::cerr << "Error: The framerate can not be smaller than one." << std::endl;
+    }
+    else
+    {
+        maxFramerate = newFramerate;
+        calculateDelay();
+    }
+
+    return maxFramerate;
+}
+
+
+int VSYNC::getFramerate()
+{
+    return maxFramerate;
+}
+
+
+int VSYNC::setSyncBundle(int newSyncBundle)
+{
+    if(newSyncBundle <= 0)
+    {
+        std::cerr << "Error: The sync bundle size can not be smaller than one." << std::endl;
+    }
+    else
+    {
+        syncBundle = newSyncBundle;
+        calculateDelay();
+    }
+
+    return syncBundle;
+}
+
+
+int VSYNC::getSyncBundle()
+{
+    return syncBundle;
+}
+
+
+void VSYNC::reset()
+{
+    lastSync = SDL_GetTicks();
+    frameCounter = 0;
+}
+
+
+bool VSYNC::sync()
+{
+    frameCounter++;
+
+    if(frameCounter >= syncBundle)
+    {
+        while(SDL_GetTicks() < lastSync + delayTime);
+
+        reset();
+
+        return true;
+    }
+
+    return false;
+}
+
+
+void VSYNC::initVSYNC()
+{
+    maxFramerate = STD_MAX_FRAMERATE;
+    syncBundle = STD_SYNC_BUNDLE_SIZE;
+    calculateDelay();
+}
+
+
+void VSYNC::calculateDelay()
+{
+    delayTime = calculateDelay(maxFramerate, syncBundle);
+}
+
+
+int VSYNC::calculateDelay(int framerate, int bundleSize)
+{
+    return ((1000 / framerate) * bundleSize);
 }

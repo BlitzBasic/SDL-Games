@@ -417,7 +417,7 @@ int main (int argc, char **argv)
     int rockets = 0;
     int misses = 0;
 
-    //VSYNC frameskip(VSYNC_FRAMERATE, VSYNC_FRAMES);
+    VSYNC frameskip(VSYNC_FRAMERATE, VSYNC_FRAMES);
 
     while (!done)
     {
@@ -609,7 +609,7 @@ int main (int argc, char **argv)
         if(lifes == 0)
             done = true;
 
-        //frameskip.sync();
+        frameskip.sync();
     }
 
     int finish = SDL_GetTicks();
