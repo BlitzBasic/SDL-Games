@@ -38,6 +38,7 @@
 			<Add option="-lSDL_mixer" />
 			<Add option="-lSDL_image" />
 		</Linker>
+		<Unit filename="levels/testlevel.sge" />
 		<Unit filename="main.cpp" />
 		<Unit filename="sdl2d.cpp" />
 		<Unit filename="sdl2d.h" />

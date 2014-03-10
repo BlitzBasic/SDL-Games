@@ -771,7 +771,7 @@ void playLevel(level *stage)
                             secundaryEnemy->collisionDamage = 1;
                             secundaryEnemy->lifes = 1;
                             secundaryEnemy->type = AlienAirMine;
-                            secundaryEnemy->object = new Object2D("airmine.bmp", &imgcache, currentEnemy->element->object->getPosition().x + 80, currentEnemy->element->object->getPosition().y);
+                            secundaryEnemy->object = new Object2D("images/airmine.bmp", &imgcache, currentEnemy->element->object->getPosition().x + 80, currentEnemy->element->object->getPosition().y);
                             addEnemy(&attackers, secundaryEnemy);
                         }
                     break;
